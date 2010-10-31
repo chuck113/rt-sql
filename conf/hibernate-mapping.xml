@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping default-access="field">
+
+    <class name="com.rt.hibernate.dto.vanilla.RhymePartImpl" table="RHYMEPART">
+        <id name="id" column="ID" type="long">
+            <generator class="increment"/>
+        </id>
+
+        <property name="word" column="WORD" type="string"/>
+
+        <many-to-one name="song"
+                     class="com.rt.hibernate.dto.vanilla.SongImpl"
+                     column="SONG"
+                     cascade="save-update"
+                     unique="false"/>
+    </class>
+
+    <class name="com.rt.hibernate.dto.vanilla.SongImpl" table="SONG">
+        <id name="id" column="ID" type="long">
+            <generator class="increment"/>
+        </id>
+        <property name="title" column="TITLE" type="string"/>
+    </class>
+
+
+    <!-- we shall managed the song reference -->
+
+    <class name="com.rt.hibernate.dto.coredata.CoreDataRhymePart" table="ZRHYMEPART">
+        <id name="id" column="Z_PK" type="integer">
+            <generator class="assigned"/>
+        </id>
+
+        <property name="ent" column="Z_ENT" type="integer"/>
+        <property name="opt" column="Z_OPT" type="integer"/>
+
+        <property name="word" column="ZWORD" type="string"/>
+        <property name="rhymeScore" column="ZRHYMESCORE" type="integer"/>
+
+        <!--<property name="song" column="ZSONG" type="integer"/>-->
+        <many-to-one name="song"
+                     class="com.rt.hibernate.dto.coredata.CoreDataSong"
+                     column="ZSONG"
+                     cascade="save-update"
+                     unique="false"/>
+
+        <many-to-one name="rhyme"
+                     class="com.rt.hibernate.dto.coredata.CoreDataRhyme"
+                     column="ZRHYME"
+                     cascade="save-update"
+                     unique="false"/>
+
+        <!-- A set of words that can't be found in the search -->
+        <!--<property name="wordsNotIndexed" column="ZRHYMEPARTS" type="string"/>-->
+    </class>
+
+        <class name="com.rt.hibernate.dto.coredata.CoreDataRhyme" table="ZRHYME">
+        <id name="id" column="Z_PK" type="integer">
+            <generator class="assigned"/>
+        </id>
+
+        <property name="ent" column="Z_ENT" type="integer"/>
+        <property name="opt" column="Z_OPT" type="integer"/>
+
+        <property name="rhymeParts" column="ZPARTS" type="string"/>
+        <property name="rhymeLines" column="ZLINES" type="string"/>
+        <property name="wordsNotIndexed" column="ZWORDSNOTININDEX" type="string"/>
+     </class>
+
+    <class name="com.rt.hibernate.dto.coredata.CoreDataSong" table="ZSONG">
+        <id name="id" column="Z_PK" type="integer">
+            <generator class="assigned"/>
+        </id>
+
+        <property name="ent" column="Z_ENT" type="integer"/>
+        <property name="opt" column="Z_OPT" type="integer"/>
+
+        <property name="title" column="ZTITLE" type="string"/>
+        <property name="lyricWikiSongName" column="ZLWSONGNAME" type="string"/>
+
+        <many-to-one name="album"
+                     class="com.rt.hibernate.dto.coredata.CoreDataAlbum"
+                     column="ZALBUM"
+                     cascade="save-update"
+                     unique="false"/>
+    </class>
+
+    <class name="com.rt.hibernate.dto.coredata.CoreDataAlbum" table="ZALBUM">
+        <id name="id" column="Z_PK" type="integer">
+            <generator class="assigned"/>
+        </id>
+
+        <property name="ent" column="Z_ENT" type="integer"/>
+        <property name="opt" column="Z_OPT" type="integer"/>
+
+        <property name="title" column="ZTITLE" type="string"/>
+        <!--<property name="itunesUs" column="ZITUNESUSID" type="integer"/>
+        <property name="itunesEu" column="ZITUNESEUID" type="integer"/>-->
+
+        <many-to-one name="artist"
+                     class="com.rt.hibernate.dto.coredata.CoreDataArtist"
+                     column="ZARTIST"
+                     cascade="save-update"
+                     unique="false"/>
+
+    </class>
+
+    <class name="com.rt.hibernate.dto.coredata.CoreDataArtist" table="ZARTIST">
+        <id name="id" column="Z_PK" type="integer">
+            <generator class="assigned"/>
+        </id>
+
+        <property name="ent" column="Z_ENT" type="integer"/>
+        <property name="opt" column="Z_OPT" type="integer"/>
+
+        <property name="lyricWikiArtistName" column="ZLWARTISTNAME" type="string"/>
+
+        <property name="name" column="ZNAME" type="string"/>
+    </class>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+    <!--                                                                  -->
+    <!-- BlueprintData                                                    -->
+    <!-- 32672 is the max length of a varchar in Derby                    -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  -->
+    <!--
+    <class name="com.enigmatec.ems.datamodel.BlueprintData" table="EMS_BLUEPRINT" mutable="true">
+        <composite-id name="oid" class="com.enigmatec.ems.api.client.shared.Oid$BlueprintOid">
+            <key-property name="value" column="OID"/>
+        </composite-id>
+        
+        <property name="name" column="NAME" type="string"/>	
+		<property name="description" column="DESCRIPTION" type="string"  length="4096"/>
+
+        
+        <property name="commissionImplementation" column="COMMISSION_IMPLEMENTATION" length="32672"
+                    type="com.enigmatec.ems.datamodel.hibernate.ActionImplementationUserType"/>
+		 
+        <component name="commissionApprovalScheme" class="com.enigmatec.ems.api.client.shared.Oid$ApprovalSchemeOid"> 
+            <property name="value" column="COMMISSION_APPROVAL_SCHEME_OID"/>                       
+        </component>
+		
+		<component name="parentFolder" class="com.enigmatec.ems.api.client.shared.Oid$FolderOid"> 
+            <property name="value" column="FOLDER_OID"/>                       
+        </component>
+        
+        <property name="smallImage" column="SMALL_IMAGE" length="32672" type="com.enigmatec.ems.datamodel.hibernate.ImageDtoUserType"/>
+        <property name="largeImage" column="LARGE_IMAGE" length="32672" type="com.enigmatec.ems.datamodel.hibernate.ImageDtoUserType"/>
+		
+		<property name="commissioningInstance" column="COMMISSIONING_INSTANCE" length="32672"
+                    type="com.enigmatec.ems.datamodel.hibernate.BlueprintUserTypes$MeKey"/>
+		
+		<property name="actionApprovalSchemes" column="ACTION_APPROVAL_SCHEMES" length="32672"
+                    type="com.enigmatec.ems.datamodel.hibernate.BlueprintUserTypes$ActionApprovalSchemes"/>
+		
+		<property name="attributeMutatorApprovalSchemes" column="ATTRIBUTE_MUTATOR_APPROVAL_SCHEMES" length="32672"
+                    type="com.enigmatec.ems.datamodel.hibernate.BlueprintUserTypes$AttributeMutatorApprovalSchemes"/>  
+		
+		<property name="commissionableResourceTypes" column="COMMISSIONABLE_RESOURCE_TYPES" length="32672"
+                    type="com.enigmatec.ems.datamodel.hibernate.BlueprintUserTypes$CommissionableResourceTypes"/>
+                    
+        <property name="commissionApprovalParameters" column="COMMISSION_APPROVAL_PARAMS" length="32672"
+                    type="com.enigmatec.ems.datamodel.hibernate.BlueprintUserTypes$CommissionApprovalParameters"/>
+                    
+        <property name="actionApprovalParameters" column="ACTION_APPROVAL_PARAMS" length="32672"
+                    type="com.enigmatec.ems.datamodel.hibernate.BlueprintUserTypes$ActionApprovalParameters"/>        
+
+        <property name="preExpiryNotificationPeriod" column="preExpiryNotificationPeriod" length="32672"
+                type="com.enigmatec.ems.datamodel.hibernate.PreEventNotificationPeriodDtoUserType"/>
+        
+    </class>
+    -->
+
+</hibernate-mapping>

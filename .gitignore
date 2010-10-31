@@ -1,0 +1,3 @@
+sqlite-dbs
+*.sqlite
+.DS_Store
