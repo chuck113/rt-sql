@@ -196,7 +196,6 @@ public class RhymeTimeDao {
         Transaction transaction = session.beginTransaction();
 
         for (RhymePart part : map.values()) {
-            System.out.println(format("RhymeTimeDao.commitMap saving part %s, %s, %swq", part.getWord(), part.getRhyme().getRhymeLines(), part.getRhyme().getRhymeParts()));
             session.save(part);
         }
 
